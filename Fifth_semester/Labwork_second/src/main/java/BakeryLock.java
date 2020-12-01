@@ -1,25 +1,56 @@
-public class BakeryLock {
-    public static final int numberOfThreads = 5;
-    private static boolean[] choosing = new boolean[numberOfThreads];
+import org.jetbrains.annotations.NotNull;
 
-    private static int[] tickets = new int[numberOfThreads];
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+
+public class BakeryLock extends FixnumLock{
+    private int numberOfThreads;
+    private static int[] tickets;
+
+    BakeryLock(int numberOfThreads) {
+        super(numberOfThreads);
+        this.numberOfThreads = numberOfThreads;
+        tickets = new int[numberOfThreads];
+        for(int i = 0; i < numberOfThreads; i++)
+            tickets[i] = 0;
+
+    }
+    @Override
     public void lock() {
-        int id = 0;
-        choosing[id] = true;
+        int id = getId();
         tickets[id] = findMax() + 1;
-        choosing[id] = false;
         for (int i = 0; i < tickets.length; i++) {
             if (i == id) { continue; }
-            while (choosing[i]) { }
-
-            while ((tickets[i] != 0) && ((tickets[i] < tickets[id]) || ((tickets[i] == tickets[id]) && (i < id)))) {
-            }
+            while (tickets[i] != 0 && tickets[i] < tickets[id]) {Thread.yield(); }
         }
     }
 
-    private void unlock(int i) {
-        tickets[i] = 0;
+    @Override
+    public void lockInterruptibly() throws InterruptedException {
+        throw new UnsupportedOperationException();
     }
+
+    @Override
+    public boolean tryLock() {
+        return false;
+    }
+
+    @Override
+    public boolean tryLock(long time, @NotNull TimeUnit unit) throws InterruptedException {
+        return false;
+    }
+
+    public void unlock() {
+        int id = getId();
+        tickets[id] = 0;
+    }
+
+    @NotNull
+    @Override
+    public Condition newCondition() {
+        return null;
+    }
+
     private int findMax() {
         int m = tickets[0];
         for (int i = 1; i < tickets.length; i++) {
