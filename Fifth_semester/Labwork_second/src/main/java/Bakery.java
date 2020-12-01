@@ -1,9 +1,9 @@
 public class Bakery {
-    private static int numThread = 10;
+    //private static int numThread = 10;
 
 
-    public static void Simulate() throws InterruptedException {
-        FixnumLock lock = new BakeryLock(numThread);
+    public static void Simulate(FixnumLockable lock, int numThread) throws InterruptedException {
+        //FixnumLock lock = new BakeryLock(numThread);
         //FixnumLock lock = new ImprovedBakeryLock(numThread);
 
         Thread[] threads = new Thread[numThread];
@@ -14,7 +14,7 @@ public class Bakery {
                 b = -1;
             else
                 b = 1;
-            if( i == numThread - 1)
+            if( i == numThread - 1 && numThread % 2 == 1)
                 b = 0;
             threads[i] = new Thread((Runnable) new BakeryRunnable(lock,b));
             lock.registerThread();

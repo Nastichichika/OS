@@ -17,7 +17,7 @@ public class BakeryLock extends FixnumLock{
     }
     @Override
     public void lock() {
-        int id = getId();
+        int id = (int) Thread.currentThread().getId() % numberOfThreads;
         tickets[id] = findMax() + 1;
         for (int i = 0; i < tickets.length; i++) {
             if (i == id) { continue; }
@@ -41,7 +41,7 @@ public class BakeryLock extends FixnumLock{
     }
 
     public void unlock() {
-        int id = getId();
+        int id = (int) Thread.currentThread().getId() % numberOfThreads;
         tickets[id] = 0;
     }
 

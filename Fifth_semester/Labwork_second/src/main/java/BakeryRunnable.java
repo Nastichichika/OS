@@ -1,9 +1,9 @@
 public class BakeryRunnable implements  Runnable{
 
-    FixnumLock lock;
+    FixnumLockable lock;
     private static volatile int a = 0;
     int b;
-    BakeryRunnable(FixnumLock lock,  int b) {
+    BakeryRunnable(FixnumLockable lock,  int b) {
         this.lock = lock;
         this.b = b;
     }

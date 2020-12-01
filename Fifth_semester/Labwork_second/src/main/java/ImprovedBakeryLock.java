@@ -30,7 +30,7 @@ public class ImprovedBakeryLock extends FixnumLock{
         //Collections.fill(choosing, new AtomicBoolean(false));
     }
     public void lock() {
-        int id = getId();
+        int id = (int) Thread.currentThread().getId() % numberOfThreads;
         //choosing.set(id, new AtomicBoolean(true));
         choosing[id] = new AtomicBoolean(true);
 
@@ -82,7 +82,7 @@ public class ImprovedBakeryLock extends FixnumLock{
 
     public void unlock()
     {
-        int id = getId();
+        int id = (int) Thread.currentThread().getId() % numberOfThreads;
         //ticket.set(id, new AtomicInteger(0));
         ticket[id] = new AtomicInteger(0);
     }
